@@ -3,7 +3,48 @@ permissions:
   contents: write
 on:
   workflow_dispatch:
+  push:
+    branches:
+      -main
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # récupérer le code en fonction de la branche courante
+      - name: code
+        uses: actions/checkout@v3
+      # installation d'une certaine version de Node
+      - name: install Node V18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      # installation du "node_modules"
+      - name: install app
+        run: npm install
+      # exécution des tests
+      # attention : ajouter dans la package.json
+      #             "test": "react-scripts test --watchAll=false"
+      - name: test
+        run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # récupérer le code en fonction de la branche courante
+      - name: code
+        uses: actions/checkout@v3
+      # installation d'une certaine version de Node
+      - name: install Node V18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      # installation du "node_modules"
+      - name: install app
+        run: npm install
+      # exécution des tests
+      # attention : ajouter dans la package.json
+      #             "test": "react-scripts test --watchAll=false"
+      - name: build
+        run: npm run build
   deploy:
     runs-on: ubuntu-latest
     steps:
