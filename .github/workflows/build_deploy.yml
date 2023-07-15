@@ -1,20 +1,10 @@
-name: test React-app
+name: deploy React-app
+permissions:
+  contents: write
 on:
-  pull_request:
-    types:
-      - opened
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - 'hotfix-*'
-      # ex: hotfix-wording
-      - 'feature/**'
-      # ex : feature/user/update
-    path-ignore:
-      - .github/workflows/*
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       # récupérer le code en fonction de la branche courante
@@ -28,8 +18,13 @@ jobs:
       # installation du "node_modules"
       - name: install app
         run: npm install
-      # exécution des tests
-      # attention : ajouter dans la package.json
-      #             "test": "react-scripts test --watchAll=false"
-      - name: test
-        run: npm run test
+      - name: build
+        run: npm run build
+      - name: deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          folder: build
+          branch: gh-pages
+        # Si on n'a pas accordé des droits d'écriture en début de script
+        #env:
+          #ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
