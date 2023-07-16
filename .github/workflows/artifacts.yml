@@ -40,7 +40,7 @@ jobs:
           name: testing
       # installation d'une certaine version de Node
       - name: display result
-        shel: bash
+        shell: bash
         run: |
           value = `cat test.txt`
           echo $value
