@@ -1,0 +1,46 @@
+name: test artifacts
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # récupérer le code en fonction de la branche courante
+      - name: code
+        uses: actions/checkout@v3
+      # installation d'une certaine version de Node
+      - name: install Node V18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      # installation du "node_modules"
+      - name: install app
+        run: npm install
+      # exécution des tests
+      # attention : ajouter dans la package.json
+      #             "test": "react-scripts test --watchAll=false"
+      - name: test
+        run: npm run test > test.txt
+      - name: upload test
+        uses: actions/upload-artifact@v3
+        with:
+          name: testing
+          path: test.txt
+
+  download-test:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      # récupérer le code en fonction de la branche courante
+      - name: download test
+        uses: actions/download-artifact@v3
+        with:
+          name: testing
+      # installation d'une certaine version de Node
+      - name: display result
+        shel: bash
+        run: |
+          value = `cat test.txt`
+          echo $value
